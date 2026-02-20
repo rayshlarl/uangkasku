@@ -19,7 +19,7 @@ export const getAllKaryawan = async (req, res) => {
   }
 };
 
-// Buat data karyawan
+// Buat data karyawans
 export const createKaryawan = async (req, res) => {
   const { nama, email, password } = req.body;
   const hashPassword = await bcrypt.hash(password, 10);
