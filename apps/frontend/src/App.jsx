@@ -1,43 +1,48 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
-import Login from './components/Login'
-import Register from './components/Register'
-import Dashboard from './components/Dashboard'
-import ProtectedRoute from './components/ProtectedRoute'
-import Sidebar from './components/Sideabar'
-import ModalSetorKas from './components/ModalSetorKas'
-import { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import './App.css'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Dashboard from "./components/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Sidebar from "./components/Sideabar";
+import ModalSetorKas from "./components/ModalSetorKas";
+import { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
 function App() {
-  const [showSetor, setShowSetor] = useState(false)
-  const user = JSON.parse(localStorage.getItem('user') || '{}')
-  const isAdmin = user.role === 'ADMIN'
+  const [showSetor, setShowSetor] = useState(false);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = user.role === "ADMIN";
 
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
             <PublicRoute>
               <Login />
             </PublicRoute>
-          } 
+          }
         />
-        <Route 
-          path="/register" 
+        <Route
+          path="/register"
           element={
             <PublicRoute>
               <Register />
             </PublicRoute>
-          } 
+          }
         />
 
         {/* Protected Routes */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <div className="d-flex">
@@ -46,7 +51,10 @@ function App() {
                   {/* Tombol Setor hanya untuk admin */}
                   {isAdmin && (
                     <div className="text-end mb-3">
-                      <button className="btn btn-success" onClick={() => setShowSetor(true)}>
+                      <button
+                        className="btn btn-success"
+                        onClick={() => setShowSetor(true)}
+                      >
                         + Setor Uang Kas
                       </button>
                     </div>
@@ -57,7 +65,9 @@ function App() {
                     <ModalSetorKas
                       show={showSetor}
                       onHide={() => setShowSetor(false)}
-                      onSubmit={() => { setShowSetor(false); }}
+                      onSubmit={() => {
+                        setShowSetor(false);
+                      }}
                     />
                   )}
                 </div>
@@ -70,16 +80,16 @@ function App() {
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Router>
-  )
+  );
 }
 
 // Helper: Redirect ke dashboard jika sudah login
 const PublicRoute = ({ children }) => {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem("token");
   if (token) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/dashboard" replace />;
   }
-  return children
-}
+  return children;
+};
 
-export default App
+export default App;
