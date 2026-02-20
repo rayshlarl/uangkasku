@@ -17,13 +17,10 @@ function Dashboard() {
     }).format(amount);
   };
 
-  //Inisialisasi data dari DB
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await transactionAPI.getAll();
-        // console.log(response);
-
         const value = response.reduce(
           (acc, data) => {
             acc.totalTrans = acc.totalTrans + 1;
@@ -33,12 +30,11 @@ function Dashboard() {
               acc.expenses = +data.amount;
             }
             acc.saldo = acc.incomes - acc.expenses;
-            console.log(acc.totalTrans);
             return acc;
           },
           { totalTrans: 0, incomes: 0, expenses: 0, saldo: 0 }
         );
-        console.log(value);
+
         setStats((prev) => ({
           ...prev,
           pemasukan: value.incomes || 0,
