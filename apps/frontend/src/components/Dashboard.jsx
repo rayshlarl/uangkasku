@@ -1,59 +1,93 @@
-import { useState } from 'react'
-import { Container, Row, Col, Card, Alert } from 'react-bootstrap'
-import { FaWallet, FaArrowUp, FaArrowDown, FaUsers } from 'react-icons/fa'
+import { useState, useEffect } from "react";
+import { Container, Row, Col, Card, Alert } from "react-bootstrap";
+import { FaWallet, FaArrowUp, FaArrowDown, FaUsers } from "react-icons/fa";
+import transactionAPI from "../api/transactions";
 
 function Dashboard() {
   // FE-only dummy stats
-  const [stats, setStats] = useState({
-    saldo: 5200000,
-    pemasukan: 2000000,
-    pengeluaran: 1000000,
-    totalTransaksi: 12,
-  });
+  const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const formatRupiah = (amount) => {
-    return new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      minimumFractionDigits: 0
-    }).format(amount)
-  }
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  //Inisialisasi data dari DB
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await transactionAPI.getAll();
+        // console.log(response);
+
+        const value = response.reduce(
+          (acc, data) => {
+            acc.totalTrans = acc.totalTrans + 1;
+            if (data.type === "PEMASUKAN") {
+              acc.incomes = +data.amount;
+            } else if (data.type === "PENGELUARAN") {
+              acc.expenses = +data.amount;
+            }
+            acc.saldo = acc.incomes - acc.expenses;
+            console.log(acc.totalTrans);
+            return acc;
+          },
+          { totalTrans: 0, incomes: 0, expenses: 0, saldo: 0 }
+        );
+        console.log(value);
+        setStats((prev) => ({
+          ...prev,
+          pemasukan: value.incomes || 0,
+          pengeluaran: value.expenses || 0,
+          saldo: value.saldo || 0,
+          totalTransaksi: value.totalTrans,
+        }));
+        setLoading(true);
+      } catch (err) {
+        //masih kosong bisa pake notif lah
+        console.log("error jir");
+      }
+    };
+    fetchData();
+  }, []);
 
   const statCards = [
     {
-      title: 'Total Saldo',
+      title: "Total Saldo",
       value: formatRupiah(stats?.saldo || 0),
       icon: FaWallet,
-      color: 'primary',
-      bgColor: 'bg-primary bg-opacity-10',
-      textColor: 'text-primary'
+      color: "primary",
+      bgColor: "bg-primary bg-opacity-10",
+      textColor: "text-primary",
     },
     {
-      title: 'Pemasukan Bulan Ini',
+      title: "Pemasukan Bulan Ini",
       value: formatRupiah(stats?.pemasukan || 0),
       icon: FaArrowUp,
-      color: 'success',
-      bgColor: 'bg-success bg-opacity-10',
-      textColor: 'text-success'
+      color: "success",
+      bgColor: "bg-success bg-opacity-10",
+      textColor: "text-success",
     },
     {
-      title: 'Pengeluaran Bulan Ini',
+      title: "Pengeluaran Bulan Ini",
       value: formatRupiah(stats?.pengeluaran || 0),
       icon: FaArrowDown,
-      color: 'danger',
-      bgColor: 'bg-danger bg-opacity-10',
-      textColor: 'text-danger'
+      color: "danger",
+      bgColor: "bg-danger bg-opacity-10",
+      textColor: "text-danger",
     },
     {
-      title: 'Total Transaksi',
+      title: "Total Transaksi",
       value: stats?.totalTransaksi || 0,
       icon: FaUsers,
-      color: 'info',
-      bgColor: 'bg-info bg-opacity-10',
-      textColor: 'text-info'
-    }
+      color: "info",
+      bgColor: "bg-info bg-opacity-10",
+      textColor: "text-info",
+    },
   ];
 
   return (
@@ -77,7 +111,9 @@ function Dashboard() {
                     <p className="text-muted mb-1 small">{stat.title}</p>
                     <h4 className="fw-bold mb-0">{stat.value}</h4>
                   </div>
-                  <div className={`${stat.bgColor} ${stat.textColor} p-3 rounded`}>
+                  <div
+                    className={`${stat.bgColor} ${stat.textColor} p-3 rounded`}
+                  >
                     <stat.icon size={24} />
                   </div>
                 </div>
@@ -115,7 +151,7 @@ function Dashboard() {
         </Col>
       </Row>
     </Container>
-  )
+  );
 }
 
-export default Dashboard
+export default Dashboard;
