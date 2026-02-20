@@ -14,6 +14,34 @@ function App() {
   const user = JSON.parse(localStorage.getItem('user') || '{}')
   const isAdmin = user.role === 'ADMIN'
 
+  // State untuk stats dan riwayat agar bisa diubah dari Sidebar
+  const [stats, setStats] = useState({
+    saldo: 5200000,
+    pemasukan: 2000000,
+    pengeluaran: 1000000,
+    totalTransaksi: 12,
+  });
+  const [riwayat, setRiwayat] = useState([]);
+
+  // Handler setor kas global
+  const handleSetorKas = ({ jumlah, keterangan, nama }) => {
+    setStats((prev) => ({
+      ...prev,
+      saldo: prev.saldo + jumlah,
+      pemasukan: prev.pemasukan + jumlah,
+      totalTransaksi: prev.totalTransaksi + 1,
+    }));
+    setRiwayat((prev) => [
+      {
+        nama,
+        jumlah,
+        keterangan,
+        tanggal: new Date().toLocaleString('id-ID'),
+      },
+      ...prev,
+    ]);
+  };
+
   return (
     <Router>
       <Routes>
@@ -41,7 +69,7 @@ function App() {
           element={
             <ProtectedRoute>
               <div className="d-flex">
-                <Sidebar />
+                <Sidebar onSetorKas={handleSetorKas} />
                 <div className="flex-grow-1">
                   {/* Tombol Setor hanya untuk admin */}
                   {isAdmin && (
@@ -51,7 +79,7 @@ function App() {
                       </button>
                     </div>
                   )}
-                  <Dashboard />
+                  <Dashboard stats={stats} riwayat={riwayat} />
                   {/* Modal Setor Kas */}
                   {isAdmin && (
                     <ModalSetorKas

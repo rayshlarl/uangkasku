@@ -1,17 +1,12 @@
 import { useState } from 'react'
-import { Container, Row, Col, Card, Alert } from 'react-bootstrap'
+import { Container, Row, Col, Card, Alert, Modal, Button } from 'react-bootstrap'
 import { FaWallet, FaArrowUp, FaArrowDown, FaUsers } from 'react-icons/fa'
 
-function Dashboard() {
-  // FE-only dummy stats
-  const [stats, setStats] = useState({
-    saldo: 5200000,
-    pemasukan: 2000000,
-    pengeluaran: 1000000,
-    totalTransaksi: 12,
-  });
+function Dashboard({ stats, riwayat }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showProfile, setShowProfile] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const formatRupiah = (amount) => {
     return new Intl.NumberFormat('id-ID', {
@@ -64,9 +59,47 @@ function Dashboard() {
           <h2 className="fw-bold mb-1">Dashboard</h2>
           <p className="text-muted mb-0">Selamat datang di Uangkasku</p>
         </div>
+        <div className="d-flex align-items-center gap-2">
+          <div
+            className="bg-success text-white rounded-circle d-flex align-items-center justify-content-center"
+            style={{width: 40, height: 40, fontWeight: 'bold', fontSize: 18, cursor: 'pointer'}}
+            onClick={() => setShowProfile(true)}
+            title="Lihat Profil"
+          >
+            {user.nama?.[0] || 'U'}
+          </div>
+          <div className="d-none d-md-block text-end">
+            <div className="fw-semibold">
+              {user.nama || 'User'}
+            </div>
+            <div className="small text-muted">
+              {user.role || ''}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Stats Cards */}
+      <Modal show={showProfile} onHide={() => setShowProfile(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Profil Pengguna</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="text-center mb-3">
+            <div className="bg-success text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style={{width: 60, height: 60, fontWeight: 'bold', fontSize: 28}}>
+              {user.nama?.[0] || 'U'}
+            </div>
+            <div className="fw-bold fs-5">{user.nama || 'User'}</div>
+            <div className="text-muted small">{user.email || '-'}</div>
+            <div className="badge bg-secondary mt-2">{user.role || '-'}</div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowProfile(false)}>
+            Tutup
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <Row className="g-3 mb-4">
         {statCards.map((stat, index) => (
           <Col md={6} lg={3} key={index}>
@@ -87,7 +120,6 @@ function Dashboard() {
         ))}
       </Row>
 
-      {/* Content Area */}
       <Row className="g-3">
         <Col lg={8}>
           <Card className="border-0 shadow-sm">
@@ -95,24 +127,36 @@ function Dashboard() {
               <h5 className="mb-0 fw-bold">Riwayat Transaksi</h5>
             </Card.Header>
             <Card.Body>
-              <p className="text-muted text-center py-4">
-                Data transaksi akan ditampilkan di sini
-              </p>
+              {riwayat.length === 0 ? (
+                <p className="text-muted text-center py-4">
+                  Data transaksi akan ditampilkan di sini
+                </p>
+              ) : (
+                <table className="table table-sm">
+                  <thead>
+                    <tr>
+                      <th>Nama karyawan</th>
+                      <th>Jumlah</th>
+                      <th>Keterangan</th>
+                      <th>Tanggal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {riwayat.map((r, i) => (
+                      <tr key={i}>
+                        <td>{r.nama}</td>
+                        <td>{formatRupiah(r.jumlah)}</td>
+                        <td>{r.keterangan}</td>
+                        <td>{r.tanggal}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </Card.Body>
           </Card>
         </Col>
-        <Col lg={4}>
-          <Card className="border-0 shadow-sm">
-            <Card.Header className="bg-white border-0 py-3">
-              <h5 className="mb-0 fw-bold">Informasi</h5>
-            </Card.Header>
-            <Card.Body>
-              <p className="text-muted small mb-0">
-                Dashboard menampilkan ringkasan keuangan bulan ini.
-              </p>
-            </Card.Body>
-          </Card>
-        </Col>
+        
       </Row>
     </Container>
   )

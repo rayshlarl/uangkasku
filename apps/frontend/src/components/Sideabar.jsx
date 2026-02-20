@@ -3,14 +3,43 @@ import { Link } from 'react-router-dom';
 import { FaWallet, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import ModalSetorKas from './ModalSetorKas';
 
-function Sidebar() {
+const dummyKaryawan = [
+  { nama: 'Budi Santoso' },
+  { nama: 'Siti Nurhaliza' },
+  { nama: 'Ahmad Rizky' },
+  { nama: 'Dewi Lestari' },
+  { nama: 'Rudi Hartono' },
+];
+
+function Sidebar({ onSetorKas }) {
   const [showSetor, setShowSetor] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const isAdmin = user.role === 'ADMIN';
+  const [riwayat, setRiwayat] = useState([]);
 
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = '/login';
+  };
+
+  // Handler setor kas dari sidebar
+  const handleSetorKas = ({ jumlah, keterangan, nama }) => {
+    if (onSetorKas) {
+      onSetorKas({ jumlah, keterangan, nama });
+    }
+    setRiwayat((prev) => [
+      {
+        nama,
+        jumlah,
+        keterangan,
+        tanggal: new Date().toLocaleString('id-ID'),
+      },
+      ...prev,
+    ]);
+    setShowSetor(false);
+    setTimeout(() => {
+      alert(`Setor kas berhasil!\nNama: ${nama}\nJumlah: Rp${jumlah}\nKeterangan: ${keterangan}`);
+    }, 100);
   };
 
   return (
@@ -27,9 +56,8 @@ function Sidebar() {
         </li>
         <li className="mb-3 d-flex align-items-center justify-content-between">
           <Link to="/karyawan" className="text-decoration-none text-dark">
-            <FaUser className="me-2" /> setor <ModalSetorKas></ModalSetorKas>
+            <FaWallet className="me-2" /> Setoran
           </Link>
-          {/* Tombol setor kas hanya untuk admin */}
           {isAdmin && (
             <button
               className="btn btn-sm btn-success ms-2"
@@ -51,7 +79,8 @@ function Sidebar() {
         <ModalSetorKas
           show={showSetor}
           onHide={() => setShowSetor(false)}
-          onSubmit={() => setShowSetor(false)}
+          onSubmit={handleSetorKas}
+          karyawanList={dummyKaryawan}
         />
       )}
     </div>

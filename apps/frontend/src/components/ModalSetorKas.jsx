@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { FaPlus, FaMoneyBillWave } from 'react-icons/fa';
 
-function ModalSetorKas({ show, onHide, onSubmit }) {
+function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
   const [jumlah, setJumlah] = useState('');
   const [keterangan, setKeterangan] = useState('');
+  const [nama, setNama] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,10 +18,16 @@ function ModalSetorKas({ show, onHide, onSubmit }) {
       setLoading(false);
       return;
     }
+    if (!nama) {
+      setError('Pilih nama karyawan');
+      setLoading(false);
+      return;
+    }
     try {
-      await onSubmit({ jumlah: Number(jumlah), keterangan });
+      await onSubmit({ jumlah: Number(jumlah), keterangan, nama });
       setJumlah('');
       setKeterangan('');
+      setNama('');
       onHide();
     } catch (err) {
       setError('Gagal menyimpan data');
@@ -38,6 +45,15 @@ function ModalSetorKas({ show, onHide, onSubmit }) {
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
+          <Form.Group className="mb-3">
+            <Form.Label>Nama Karyawan</Form.Label>
+            <Form.Select value={nama} onChange={e => setNama(e.target.value)} required disabled={loading}>
+              <option value="">Pilih nama karyawan</option>
+              {karyawanList.map((k, idx) => (
+                <option key={idx} value={k.nama}>{k.nama}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Jumlah Setoran</Form.Label>
             <InputGroup>
