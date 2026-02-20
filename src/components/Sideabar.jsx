@@ -1,8 +1,18 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaWallet, FaUser, FaSignOutAlt } from 'react-icons/fa';
-import './Sidebar.css';
+import ModalSetorKas from './ModalSetorKas';
 
 function Sidebar() {
+  const [showSetor, setShowSetor] = useState(false);
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isAdmin = user.role === 'ADMIN';
+
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = '/login';
+  };
+
   return (
     <div className="sidebar bg-light p-3 vh-100">
       <div className="sidebar-header mb-4 text-center">
@@ -15,17 +25,35 @@ function Sidebar() {
             <FaUser className="me-2" /> Dashboard
           </Link>
         </li>
-        <li className="mb-3">
+        <li className="mb-3 d-flex align-items-center justify-content-between">
           <Link to="/karyawan" className="text-decoration-none text-dark">
-            <FaUser className="me-2" /> Karyawan
+            <FaUser className="me-2" /> setor <ModalSetorKas></ModalSetorKas>
           </Link>
+          {/* Tombol setor kas hanya untuk admin */}
+          {isAdmin && (
+            <button
+              className="btn btn-sm btn-success ms-2"
+              title="Setor Uang Kas"
+              onClick={() => setShowSetor(true)}
+            >
+              +
+            </button>
+          )}
         </li>
         <li className="mt-5">
-          <button className="btn btn-outline-danger w-100">
+          <button className="btn btn-outline-danger w-100" onClick={handleLogout}>
             <FaSignOutAlt className="me-2" /> Logout
           </button>
         </li>
       </ul>
+      {/* Modal Setor Kas */}
+      {isAdmin && (
+        <ModalSetorKas
+          show={showSetor}
+          onHide={() => setShowSetor(false)}
+          onSubmit={() => setShowSetor(false)}
+        />
+      )}
     </div>
   );
 }

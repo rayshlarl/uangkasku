@@ -9,7 +9,6 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" replace />
   }
 
-  // Check role jika ada batasan
   if (allowedRoles && !allowedRoles.includes(userRole)) {
     return <Navigate to="/dashboard" replace />
   }
