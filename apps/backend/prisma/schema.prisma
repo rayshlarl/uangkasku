@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -17,7 +16,7 @@ enum Role {
   ADMIN
   KARYAWAN
 }
-
+ 
 model Karyawan {
   id        Int      @id @default(autoincrement())
   nama      String
