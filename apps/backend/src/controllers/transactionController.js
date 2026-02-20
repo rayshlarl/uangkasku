@@ -4,50 +4,10 @@ import prisma from "../config/db.js";
 export const getAllTx = async (req, res) => {
   try {
     const response = await prisma.transaction.findMany();
-    res.status(200).json({ response });
+    res.status(200).json({ valid: true, data: response });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Gagal memuat transaksi" });
-  }
-};
-
-// Get total Expense (FE 4 Dashboard)
-export const getTotalExpenses = async (req, res) => {
-  try {
-    const response = await prisma.transaction.aggregate({
-      _sum: {
-        amount: true,
-      },
-      where: {
-        type: "PENGELUARAN",
-      },
-    });
-    res.status(200).json({ valid: true, data: response });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ valid: false, error: "Gagal memuat total pengeluaran" });
-  }
-};
-
-// Get total Income (FE 4 Dashboard)
-export const getTotalIncomes = async (req, res) => {
-  try {
-    const response = await prisma.transaction.aggregate({
-      _sum: {
-        amount: true,
-      },
-      where: {
-        type: "PEMASUKAN",
-      },
-    });
-    res.status(200).json({ valid: true, data: response });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ valid: false, error: "Gagal memuat total pemasukan" });
   }
 };
 
