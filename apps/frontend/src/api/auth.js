@@ -3,7 +3,6 @@ import api from "./axios";
 export const authAPI = {
   login: async (credentials) => {
     const response = await api.post("/auth/login", credentials);
-    // Credentioal
     return response.data;
   },
 
