@@ -35,7 +35,7 @@ export const karyawanService = {
           deleted: false,
         },
         where: {
-          id: parseInt(isUSerExist.id),
+          id: isUSerExist.id,
         },
       });
     }
