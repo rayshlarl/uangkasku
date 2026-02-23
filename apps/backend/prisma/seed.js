@@ -7,7 +7,7 @@ const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
-//Password sama semua jar bedanya udah di hash
+//Password sama semua jar ( 123 ) bedanya udah di hash
 const karyawanData = [
   {
     nama: "Budi Santoso",
