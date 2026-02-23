@@ -3,6 +3,7 @@ import api from "./axios";
 export const authAPI = {
   login: async (credentials) => {
     const response = await api.post("/auth/login", credentials);
+    // Kembalikan seluruh response.data agar FE bisa akses token, valid, data, dsb
     return response.data;
   },
 

@@ -1,16 +1,13 @@
 import api from "./axios";
 
 export const transactionAPI = {
-  // Note: sementara credents ane hapus.
-  // masih mikir logic buat paginationya
-  getAll: async () => {
-    const response = await api.get("/transactions");
+  getAll: async (params = {}) => {
+    const response = await api.get("/transactions", { params });
     return response.data.data;
   },
 
-  //ane tambahin "/create" biar ga nabrak route atas
   create: async (transactionData) => {
-    const response = await api.post("/transactions/create", transactionData);
+    const response = await api.post("/transactions", transactionData);
     return response.data.data;
   },
 

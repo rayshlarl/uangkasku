@@ -54,7 +54,6 @@ function Register() {
             <Form.Label>Role</Form.Label>
             <Form.Select value={role} onChange={e => setRole(e.target.value)} disabled={loading}>
               <option value="KARYAWAN">KARYAWAN</option>
-              <option value="ADMIN">ADMIN</option>
             </Form.Select>
           </Form.Group>
           <Button type="submit" variant="success" className="w-100" disabled={loading}>
