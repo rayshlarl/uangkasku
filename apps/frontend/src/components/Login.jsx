@@ -18,7 +18,6 @@ function Login() {
 
     try {
       const response = await authAPI.login({ password, email });
-      console.log(response.error);
 
       if (response) {
         localStorage.setItem("token", "dummy-token");
