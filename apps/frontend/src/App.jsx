@@ -18,8 +18,9 @@ import transactionAPI from "./api/transactions";
 
 function App() {
   const [showSetor, setShowSetor] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const isAdmin = user.role === "ADMIN";
+  const user = localStorage.getItem("user") || "{}";
+  const isAdmin = localStorage.getItem("userRole") === "ADMIN";
+  console.log(user);
 
   // State untuk stats dan riwayat agar bisa diubah dari Sidebar
   const [stats, setStats] = useState({});
