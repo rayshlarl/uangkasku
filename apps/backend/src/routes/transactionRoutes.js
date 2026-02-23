@@ -1,7 +1,7 @@
 import express from "express";
 import {
   getAllTx,
-  createNewIncomes,
+  createNewTx,
   editTx,
   deleteTx,
 } from "../controllers/transactionController.js";
@@ -9,8 +9,8 @@ import {
 const router = express.Router();
 
 router.get("/", getAllTx);
-router.post("/createIncome", createNewIncomes);
-router.put("/edit/:txId", editTx);
-router.delete("/delete/:txId", deleteTx);
+router.post("/", createNewTx);
+router.put("/:id", editTx);
+router.delete("/:id", deleteTx);
 
 export default router;

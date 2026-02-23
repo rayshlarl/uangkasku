@@ -23,6 +23,7 @@ model Karyawan {
   email     String   @unique
   password  String
   role      Role
+  deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -43,6 +44,7 @@ model Transaction {
   type      TransactionType
   date      DateTime
   note      String?
+  deleted   Boolean         @default(false)
   createdAt DateTime        @default(now())
 
   // Relasi ke Karyawan
