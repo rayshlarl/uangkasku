@@ -18,11 +18,12 @@ function Login() {
 
     try {
       const response = await authAPI.login({ password, email });
-
+      console.log(response);
       if (response) {
-        localStorage.setItem("token", "dummy-token");
-        localStorage.setItem("user", JSON.stringify(response));
-        localStorage.setItem("userRole", response.role);
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response?.data?.nama));
+        localStorage.setItem("userRole", response.data.role);
+        localStorage.setItem("email", response.data.email);
         navigate("/dashboard");
       }
     } catch (err) {
