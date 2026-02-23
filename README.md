@@ -14,3 +14,26 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## Backend Setup
+
+after clone this repo u should get the folder structure like this:
+
+root/ (Mini_Projectku)
+└── apps/
+├── backend/ (Node.js / Express / Prisma)
+└── frontend/ (React / Vite)
+
+make sure u are in backend folder then,
+
+##Install Depedencies
+**npm install**
+
+##Synchronous the prisma to the Database
+**npx prissma generate**
+**npx prisma db push**
+**npx prisma studio**
+
+and then:
+
+**npm run dev**
