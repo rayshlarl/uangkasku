@@ -14,7 +14,15 @@ function Dashboard({ stats, riwayat }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showProfile, setShowProfile] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const user = (localStorage.getItem("user") || "{}").replaceAll('"', "");
+  const role = (localStorage.getItem("userRole") || "KARYAWAN").replaceAll(
+    '"',
+    ""
+  );
+  const email = (localStorage.getItem("email") || "user@mail.com").replaceAll(
+    '"',
+    ""
+  );
 
   const formatRupiah = (amount) => {
     return new Intl.NumberFormat("id-ID", {
@@ -83,7 +91,7 @@ function Dashboard({ stats, riwayat }) {
             {user.nama?.[0] || "U"}
           </div>
           <div className="d-none d-md-block text-end">
-            <div className="fw-semibold">{user.nama || "User"}</div>
+            <div className="fw-semibold">{user || "User"}</div>
             <div className="small text-muted">{user.role || ""}</div>
           </div>
         </div>
@@ -106,9 +114,9 @@ function Dashboard({ stats, riwayat }) {
             >
               {user.nama?.[0] || "U"}
             </div>
-            <div className="fw-bold fs-5">{user.nama || "User"}</div>
-            <div className="text-muted small">{user.email || "-"}</div>
-            <div className="badge bg-secondary mt-2">{user.role || "-"}</div>
+            <div className="fw-bold fs-5">{user || "User"}</div>
+            <div className="text-muted small">{email || "-"}</div>
+            <div className="badge bg-secondary mt-2">{role || "-"}</div>
           </div>
         </Modal.Body>
         <Modal.Footer>
