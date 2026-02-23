@@ -3,6 +3,7 @@ import {
   getAllKaryawan,
   createKaryawan,
 } from "../controllers/karyawanController.js";
+const abd = 0;
 
 const router = express.Router();
 
