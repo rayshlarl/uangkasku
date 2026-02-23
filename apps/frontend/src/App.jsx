@@ -44,7 +44,7 @@ function App() {
           },
           { totalTrans: 0, incomes: 0, expenses: 0, saldo: 0 }
         );
-        console.log(value);
+
         setStats((prev) => ({
           ...prev,
           pemasukan: value.incomes,
