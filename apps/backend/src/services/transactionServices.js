@@ -10,14 +10,13 @@ export const transactionServices = {
     });
   },
   createNewTx: async (data) => {
-    tableNgawur();
     const { amount, username, note, title, type } = data;
     const isUserExist = await prisma.karyawan.findFirst({
       select: {
         id: true,
       },
       where: {
-        name: username,
+        nama: username,
       },
     });
     if (!isUserExist) throw new ApiError(404, "Tidak ada user yang cocok");
