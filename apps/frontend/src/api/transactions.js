@@ -2,13 +2,11 @@ import api from "./axios";
 
 export const transactionAPI = {
   getAll: async (params = {}) => {
-    console.log("Hi");
     const response = await api.get("/transactions", { params });
     return response.data.data;
   },
 
   create: async (transactionData = {}) => {
-    console.log(transactionData);
     const response = await api.post("/transactions", transactionData);
     return response.data.data;
   },

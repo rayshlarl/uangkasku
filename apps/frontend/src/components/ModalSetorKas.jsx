@@ -10,7 +10,6 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
-    console.log(nama, keterangan, jumlah);
     e.preventDefault();
     setLoading(true);
     setError("");

@@ -26,7 +26,7 @@ function App() {
   const [karyawan, setKaryawan] = useState([]);
   const [riwayat, setRiwayat] = useState([]);
   const [createTransactionData, setCreateTransactionData] = useState({});
-  console.log(createTransactionData);
+
   //Implementasi penggunaan api cuy
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +35,7 @@ function App() {
         const karyawanData = await karyawanApi.getAll();
 
         setKaryawan(karyawanData);
-        console.log(karyawanData);
+        console.log(stats);
 
         const value = response.reduce(
           (acc, data) => {
@@ -134,6 +134,13 @@ function App() {
                           type: dataSetoran.type,
                           note: dataSetoran.keterangan,
                         };
+                        setStats((prev) => ({
+                          ...prev,
+                          pemasukan:
+                            (prev.pemasukan || 0) + Number(dataSetoran.jumlah),
+                          saldo: (prev.saldo || 0) + Number(dataSetoran.jumlah),
+                          totalTransaksi: (prev.totalTransaksi || 0) + 1,
+                        }));
                         await transactionAPI.create(createTrans);
                       }}
                       karyawanList={karyawan}
