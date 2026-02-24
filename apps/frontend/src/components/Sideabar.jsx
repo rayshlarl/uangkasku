@@ -11,8 +11,12 @@ const dummyKaryawan = [
   { nama: 'Rudi Hartono' },
 ];
 
+<<<<<<< Updated upstream
 
 //sidebar
+=======
+// Komponen Sidebar
+>>>>>>> Stashed changes
 function Sidebar({ onSetorKas }) {
   const [showSetor, setShowSetor] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{}');

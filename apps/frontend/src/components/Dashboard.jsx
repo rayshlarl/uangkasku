@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Container, Row, Col, Card, Alert, Modal, Button } from 'react-bootstrap'
 import { FaWallet, FaArrowUp, FaArrowDown, FaUsers } from 'react-icons/fa'
 
+
+// Komponen utama Dashboard
 function Dashboard({ stats, riwayat }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');

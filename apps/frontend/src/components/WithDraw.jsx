@@ -2,10 +2,8 @@ import { useState } from 'react';
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { FaPlus, FaMoneyBillWave } from 'react-icons/fa';
 
-
-
-// Komponen Modal untuk Setor Uang Kas
-function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
+// Komponen Modal untuk Penarikan Uang Kas
+function WithDraw({ show, onHide, onSubmit, karyawanList = [] }) {
   const [jumlah, setJumlah] = useState('');
   const [keterangan, setKeterangan] = useState('');
   const [nama, setNama] = useState('');
@@ -43,7 +41,7 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>
         <Modal.Title>
-          <FaMoneyBillWave className="me-2 text-success" /> Setor Uang Kas
+          <FaMoneyBillWave className="me-2 text-success" /> Penarikan Uang Kas
         </Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
@@ -58,7 +56,7 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Jumlah Setoran</Form.Label>
+            <Form.Label>Jumlah Penarikan</Form.Label>
             <InputGroup>
               <InputGroup.Text>Rp</InputGroup.Text>
               <Form.Control
@@ -78,18 +76,18 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
               type="text"
               value={keterangan}
               onChange={e => setKeterangan(e.target.value)}
-              placeholder="Contoh: Setoran bulan Februari"
+              placeholder="Contoh: penarikan bulan Februari"
               disabled={loading}
             />
           </Form.Group>
           {error && <div className="text-danger small mt-2">{error}</div>}
         </Modal.Body>
-        <Modal.Footer>
+       <Modal.Footer>
           <Button variant="secondary" onClick={onHide} disabled={loading}>
             Batal
           </Button>
-          <Button type="submit" variant="success" disabled={loading}>
-            <FaPlus className="me-1" /> {loading ? 'Menyimpan...' : 'Setor'}
+          <Button type="submit" variant="danger" disabled={loading}>
+            <FaMoneyBillWave className="me-1" /> {loading ? 'Memproses...' : 'Tarik Uang'}
           </Button>
         </Modal.Footer>
       </Form>
@@ -97,4 +95,4 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
   );
 }
 
-export default ModalSetorKas;
+export default WithDraw;
