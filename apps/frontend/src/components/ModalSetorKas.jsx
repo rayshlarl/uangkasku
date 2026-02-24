@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { FaPlus, FaMoneyBillWave } from 'react-icons/fa';
 
-
-
-// Komponen Modal untuk Setor Uang Kas
 function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
   const [jumlah, setJumlah] = useState('');
   const [keterangan, setKeterangan] = useState('');
