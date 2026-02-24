@@ -15,22 +15,27 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { useEffect } from "react";
 import transactionAPI from "./api/transactions";
+import { karyawanApi } from "./api/karyawan";
 
 function App() {
   const [showSetor, setShowSetor] = useState(false);
-  const user = localStorage.getItem("user") || "{}";
   const isAdmin = localStorage.getItem("userRole") === "ADMIN";
-  console.log(user);
 
   // State untuk stats dan riwayat agar bisa diubah dari Sidebar
   const [stats, setStats] = useState({});
+  const [karyawan, setKaryawan] = useState([]);
   const [riwayat, setRiwayat] = useState([]);
-
+  const [createTransactionData, setCreateTransactionData] = useState({});
+  console.log(createTransactionData);
   //Implementasi penggunaan api cuy
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await transactionAPI.getAll();
+        const karyawanData = await karyawanApi.getAll();
+
+        setKaryawan(karyawanData);
+        console.log(karyawanData);
 
         const value = response.reduce(
           (acc, data) => {
@@ -63,12 +68,7 @@ function App() {
 
   // Handler setor kas global
   const handleSetorKas = ({ jumlah, keterangan, nama }) => {
-    setStats((prev) => ({
-      ...prev,
-      saldo: prev.saldo + jumlah,
-      pemasukan: prev.pemasukan + jumlah,
-      totalTransaksi: prev.totalTransaksi + 1,
-    }));
+    console.log(jumlah);
     setRiwayat((prev) => [
       {
         nama,
@@ -121,14 +121,22 @@ function App() {
                     </div>
                   )}
                   <Dashboard stats={stats} riwayat={riwayat} />
-                  {/* Modal Setor Kas */}
+                  {/* Modal Setor Kas here */}
                   {isAdmin && (
                     <ModalSetorKas
                       show={showSetor}
                       onHide={() => setShowSetor(false)}
-                      onSubmit={() => {
-                        setShowSetor(false);
+                      onSubmit={(dataSetoran) => {
+                        setCreateTransactionData((prev) => ({
+                          ...prev,
+                          amount: dataSetoran.jumlah,
+                          username: dataSetoran.nama,
+                          title: dataSetoran.keterangan,
+                          note: dataSetoran.keterangan,
+                          type: dataSetoran.type,
+                        }));
                       }}
+                      karyawanList={karyawan}
                     />
                   )}
                 </div>
