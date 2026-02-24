@@ -11,23 +11,23 @@ export const transactionServices = {
   },
   createNewTx: async (data) => {
     tableNgawur();
-    const { amount, userId, note, title, txType } = data;
+    const { amount, username, note, title, type } = data;
     const isUserExist = await prisma.karyawan.findFirst({
       select: {
         id: true,
       },
       where: {
-        id: parseInt(userId),
+        name: username,
       },
     });
     if (!isUserExist) throw new ApiError(404, "Tidak ada user yang cocok");
     return await prisma.transaction.create({
       data: {
         amount: parseInt(amount),
-        createdBy: parseInt(userId),
+        createdBy: parseInt(isUserExist.id),
         note: note,
         title: title,
-        type: txType,
+        type: type,
         date: new Date(),
       },
     });
