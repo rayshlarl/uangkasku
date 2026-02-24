@@ -10,6 +10,7 @@ import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Sidebar from "./components/Sideabar";
 import ModalSetorKas from "./components/ModalSetorKas";
+import WithDraw from "./components/WithDraw"; // Import modal baru
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -19,6 +20,7 @@ import { karyawanApi } from "./api/karyawan";
 
 function App() {
   const [showSetor, setShowSetor] = useState(false);
+  const [showWithdraw, setShowWithdraw] = useState(false); // State untuk modal penarikan
   const isAdmin = localStorage.getItem("userRole") === "ADMIN";
 
   // State untuk stats dan riwayat agar bisa diubah dari Sidebar
@@ -109,9 +111,15 @@ function App() {
               <div className="d-flex">
                 <Sidebar onSetorKas={handleSetorKas} />
                 <div className="flex-grow-1">
-                  {/* Tombol Setor hanya untuk admin */}
+                  {/* Tombol Aksi hanya untuk admin */}
                   {isAdmin && (
-                    <div className="text-end mb-3">
+                    <div className="text-end mb-3 d-flex justify-content-end gap-2">
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => setShowWithdraw(true)}
+                      >
+                        - Tarik Uang Kas
+                      </button>
                       <button
                         className="btn btn-success"
                         onClick={() => setShowSetor(true)}
@@ -121,7 +129,8 @@ function App() {
                     </div>
                   )}
                   <Dashboard stats={stats} riwayat={riwayat} />
-                  {/* Modal Setor Kas here */}
+                  
+                  {/* Modal Setor Kas */}
                   {isAdmin && (
                     <ModalSetorKas
                       show={showSetor}
@@ -131,7 +140,7 @@ function App() {
                           amount: dataSetoran.jumlah,
                           username: dataSetoran.nama,
                           title: dataSetoran.keterangan,
-                          type: dataSetoran.type,
+                          type: "PEMASUKAN",
                           note: dataSetoran.keterangan,
                         };
                         setStats((prev) => ({
@@ -139,6 +148,32 @@ function App() {
                           pemasukan:
                             (prev.pemasukan || 0) + Number(dataSetoran.jumlah),
                           saldo: (prev.saldo || 0) + Number(dataSetoran.jumlah),
+                          totalTransaksi: (prev.totalTransaksi || 0) + 1,
+                        }));
+                        await transactionAPI.create(createTrans);
+                      }}
+                      karyawanList={karyawan}
+                    />
+                  )}
+
+                  {/* Modal Tarik Kas (Withdraw) */}
+                  {isAdmin && (
+                    <WithDraw
+                      show={showWithdraw}
+                      onHide={() => setShowWithdraw(false)}
+                      onSubmit={async (dataPenarikan) => {
+                        const createTrans = {
+                          amount: dataPenarikan.jumlah,
+                          username: dataPenarikan.nama,
+                          title: dataPenarikan.keterangan,
+                          type: "PENGELUARAN",
+                          note: dataPenarikan.keterangan,
+                        };
+                        setStats((prev) => ({
+                          ...prev,
+                          pengeluaran:
+                            (prev.pengeluaran || 0) + Number(dataPenarikan.jumlah),
+                          saldo: (prev.saldo || 0) - Number(dataPenarikan.jumlah),
                           totalTransaksi: (prev.totalTransaksi || 0) + 1,
                         }));
                         await transactionAPI.create(createTrans);
