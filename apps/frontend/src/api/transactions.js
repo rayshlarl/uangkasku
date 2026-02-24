@@ -8,7 +8,7 @@ export const transactionAPI = {
   },
 
   create: async (transactionData = {}) => {
-    console.log("transactionData");
+    console.log(transactionData);
     const response = await api.post("/transactions", transactionData);
     return response.data.data;
   },
