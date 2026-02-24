@@ -6,7 +6,7 @@ export const transactionAPI = {
     return response.data.data;
   },
 
-  create: async (transactionData = {}) => {
+  create: async (transactionData) => {
     const response = await api.post("/transactions", transactionData);
     return response.data.data;
   },

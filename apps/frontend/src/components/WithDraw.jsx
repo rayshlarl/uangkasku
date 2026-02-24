@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { FaPlus, FaMoneyBillWave } from 'react-icons/fa';
 
-// Komponen Modal untuk Penarikan Uang Kas
 function WithDraw({ show, onHide, onSubmit, karyawanList = [] }) {
   const [jumlah, setJumlah] = useState('');
   const [keterangan, setKeterangan] = useState('');
