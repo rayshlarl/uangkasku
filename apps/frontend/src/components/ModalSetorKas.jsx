@@ -1,36 +1,43 @@
-import { useState } from 'react';
-import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
-import { FaPlus, FaMoneyBillWave } from 'react-icons/fa';
+import { useState } from "react";
+import { Modal, Button, Form, InputGroup } from "react-bootstrap";
+import { FaPlus, FaMoneyBillWave } from "react-icons/fa";
 
 function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
-  const [jumlah, setJumlah] = useState('');
-  const [keterangan, setKeterangan] = useState('');
-  const [nama, setNama] = useState('');
+  const [jumlah, setJumlah] = useState("");
+  const [keterangan, setKeterangan] = useState("");
+  const [nama, setNama] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
+    console.log(nama, keterangan, jumlah);
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
+
     if (!jumlah || isNaN(jumlah) || Number(jumlah) <= 0) {
-      setError('Jumlah harus diisi dan lebih dari 0');
+      setError("Jumlah harus diisi dan lebih dari 0");
       setLoading(false);
       return;
     }
     if (!nama) {
-      setError('Pilih nama karyawan');
+      setError("Pilih nama karyawan");
       setLoading(false);
       return;
     }
     try {
-      await onSubmit({ jumlah: Number(jumlah), keterangan, nama });
-      setJumlah('');
-      setKeterangan('');
-      setNama('');
+      await onSubmit({
+        jumlah: Number(jumlah),
+        keterangan,
+        nama,
+        type: "PEMASUKAN",
+      });
+      setJumlah("");
+      setKeterangan("");
+      setNama("");
       onHide();
     } catch (err) {
-      setError('Gagal menyimpan data');
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -47,10 +54,17 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Nama Karyawan</Form.Label>
-            <Form.Select value={nama} onChange={e => setNama(e.target.value)} required disabled={loading}>
+            <Form.Select
+              value={nama}
+              onChange={(e) => setNama(e.target.value)}
+              required
+              disabled={loading}
+            >
               <option value="">Pilih nama karyawan</option>
               {karyawanList.map((k, idx) => (
-                <option key={idx} value={k.nama}>{k.nama}</option>
+                <option key={idx} value={k.nama}>
+                  {k.nama}
+                </option>
               ))}
             </Form.Select>
           </Form.Group>
@@ -62,7 +76,7 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
                 type="number"
                 min="1"
                 value={jumlah}
-                onChange={e => setJumlah(e.target.value)}
+                onChange={(e) => setJumlah(e.target.value)}
                 placeholder="Masukkan jumlah"
                 required
                 disabled={loading}
@@ -74,7 +88,7 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
             <Form.Control
               type="text"
               value={keterangan}
-              onChange={e => setKeterangan(e.target.value)}
+              onChange={(e) => setKeterangan(e.target.value)}
               placeholder="Contoh: Setoran bulan Februari"
               disabled={loading}
             />
@@ -86,7 +100,7 @@ function ModalSetorKas({ show, onHide, onSubmit, karyawanList = [] }) {
             Batal
           </Button>
           <Button type="submit" variant="success" disabled={loading}>
-            <FaPlus className="me-1" /> {loading ? 'Menyimpan...' : 'Setor'}
+            <FaPlus className="me-1" /> {loading ? "Menyimpan..." : "Setor"}
           </Button>
         </Modal.Footer>
       </Form>
