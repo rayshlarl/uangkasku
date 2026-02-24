@@ -11,6 +11,7 @@ const dummyKaryawan = [
   { nama: 'Rudi Hartono' },
 ];
 
+// Komponen Sidebar
 function Sidebar({ onSetorKas }) {
   const [showSetor, setShowSetor] = useState(false);
   const user = JSON.parse(localStorage.getItem('user') || '{}');

@@ -88,11 +88,11 @@ function Dashboard({ stats, riwayat }) {
             onClick={() => setShowProfile(true)}
             title="Lihat Profil"
           >
-            {user.nama?.[0] || "U"}
+            {user?.[0] || "U"}
           </div>
           <div className="d-none d-md-block text-end">
             <div className="fw-semibold">{user || "User"}</div>
-            <div className="small text-muted">{user.role || ""}</div>
+            <div className="small text-muted">{role || ""}</div>
           </div>
         </div>
       </div>
@@ -112,7 +112,7 @@ function Dashboard({ stats, riwayat }) {
                 fontSize: 28,
               }}
             >
-              {user.nama?.[0] || "U"}
+              {user?.[0] || "U"}
             </div>
             <div className="fw-bold fs-5">{user || "User"}</div>
             <div className="text-muted small">{email || "-"}</div>
