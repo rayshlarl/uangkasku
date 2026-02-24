@@ -126,15 +126,15 @@ function App() {
                     <ModalSetorKas
                       show={showSetor}
                       onHide={() => setShowSetor(false)}
-                      onSubmit={(dataSetoran) => {
-                        setCreateTransactionData((prev) => ({
-                          ...prev,
+                      onSubmit={async (dataSetoran) => {
+                        const createTrans = {
                           amount: dataSetoran.jumlah,
                           username: dataSetoran.nama,
                           title: dataSetoran.keterangan,
-                          note: dataSetoran.keterangan,
                           type: dataSetoran.type,
-                        }));
+                          note: dataSetoran.keterangan,
+                        };
+                        await transactionAPI.create(createTrans);
                       }}
                       karyawanList={karyawan}
                     />
