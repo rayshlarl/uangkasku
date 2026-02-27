@@ -4,7 +4,27 @@ import { transactionServices } from "../services/transactionServices.js";
 //Get all transaction
 export const getAllTx = async (req, res, next) => {
   try {
-    const response = await transactionServices.getAllTransactions();
+    const response = await transactionServices.getAllTransactions(req.query);
+    res.status(200).json({ valid: true, data: response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Summarize transaction
+export const getSumTrans = async (req, res, next) => {
+  try {
+    const response = await transactionServices.summarizeTrans();
+    res.status(200).json({ valid: true, data: response });
+  } catch (err) {
+    next(err);
+  }
+};
+
+//Get transaction based on profile
+export const getUserTx = async (req, res, next) => {
+  try {
+    const response = await transactionServices.getUserTx(req.query, req.user);
     res.status(200).json({ valid: true, data: response });
   } catch (err) {
     next(err);
