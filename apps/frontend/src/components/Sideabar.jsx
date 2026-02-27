@@ -1,100 +1,142 @@
-import { useState } from 'react';
-import { FaWallet, FaUser, FaSignOutAlt, FaMinus, FaPlus, FaLandmark } from 'react-icons/fa';
-import ModalSetorKas from './ModalSetorKas';
-import WithDraw from './WithDraw';
+import { useEffect, useState, useRef } from "react";
+import {
+  FaWallet,
+  FaUser,
+  FaSignOutAlt,
+  FaMinus,
+  FaPlus,
+  FaLandmark,
+} from "react-icons/fa";
+import ModalSetorKas from "./ModalSetorKas";
+import WithDraw from "./WithDraw";
+import { karyawanApi } from "../api/karyawan";
+import transactionAPI from "../api/transactions";
 
-const dummyKaryawan = [
-  { nama: 'Budi Santoso' },
-  { nama: 'Siti Nurhaliza' },
-  { nama: 'Ahmad Rizky' },
-  { nama: 'Dewi Lestari' },
-  { nama: 'Rudi Hartono' },
-];
-
-function Sidebar({ onSetorKas }) {
+function Sidebar({ onSetorKas, onWithdraw }) {
   const [showSetor, setShowSetor] = useState(false);
   const [showWithdraw, setShowWithdraw] = useState(false);
+  const [karyawan, setKaryawan] = useState([]);
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
-  const isAdmin = user?.role === 'ADMIN';
+  const hasKaryawanFetched = useRef(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isAdmin = JSON.parse(localStorage.getItem("userRole")) === "ADMIN";
+
+  useEffect(() => {
+    const isModalOpen = showSetor || showWithdraw;
+    if (isModalOpen && !hasKaryawanFetched.current && karyawan.length === 0) {
+      const fetchKaryawan = async () => {
+        try {
+          console.log("diset");
+          hasKaryawanFetched.current = true;
+          const response = await karyawanApi.getAll();
+          setKaryawan(response);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      fetchKaryawan();
+    }
+  }, [showSetor, showWithdraw]);
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = '/login';
+    window.location.href = "/login";
   };
 
-  const handleSetorKas = (data) => {
-    if (onSetorKas) onSetorKas(data);
-    setShowSetor(false);
-    alert('Setor berhasil');
-  };
-
-  const handleWithdraw = (data) => {
-    if (onSetorKas) {
-      onSetorKas({
-        ...data,
-        jumlah: -Math.abs(data.jumlah),
+  const handleSetorKas = async (data) => {
+    try {
+      await transactionAPI.create({
+        amount: data.jumlah,
+        type: "PEMASUKAN",
+        username: data.nama,
+        note: data.keterangan,
+        title: `Pemasukan Rp.${data.jumlah}`,
       });
+
+      if (onSetorKas) onSetorKas(data);
+      setShowSetor(false);
+      alert("Setor berhasil");
+    } catch (err) {
+      console.error(err);
     }
-    setShowWithdraw(false);
-    alert('Penarikan berhasil');
+  };
+
+  const handleWithdraw = async (data) => {
+    try {
+      await transactionAPI.create({
+        amount: data.jumlah,
+        type: "PENGELUARAN",
+        username: data.nama,
+        note: data.keterangan,
+        title: `Pengeluaran Rp.${data.jumlah}`,
+      });
+
+      if (onWithdraw) onWithdraw(data);
+      setShowWithdraw(false);
+      alert("Setor berhasil");
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <div className="bg-light p-3 vh-100 border-end" style={{ width: '250px' }}>
+    <div className="bg-light p-3 vh-100 border-end" style={{ width: "250px" }}>
       <div className="text-center mb-4">
         <FaLandmark size={36} className="mb-2 text-success" />
         <h4 className="fw-bold">Uangkasku</h4>
       </div>
 
       <ul className="list-unstyled">
-
         <li className="mb-3">
           <button
             className="btn btn-link text-dark text-decoration-none p-0"
-            onClick={() => window.location.href = '/dashboard'}
+            onClick={() => (window.location.href = "/dashboard")}
           >
             <FaWallet className="me-2" /> Dashboard
           </button>
         </li>
-
-        <li className="mb-3 d-flex justify-content-between align-items-center">
-          <button
-            className="btn btn-link text-dark text-decoration-none p-0"
-            onClick={() => setShowSetor(true)}
-          >
-            <FaWallet className="me-2 text-primary" />
-            Setoran
-          </button>
-
-          {isAdmin && (
+        {isAdmin && (
+          <li className="mb-3 d-flex justify-content-between align-items-center">
             <button
-              className="btn btn-sm btn-success"
+              className="btn btn-link text-dark text-decoration-none p-0"
               onClick={() => setShowSetor(true)}
             >
-              <FaPlus size={12} />
+              <FaWallet className="me-2 text-primary" />
+              Setoran
             </button>
-          )}
-        </li>
 
-        <li className="mb-3 d-flex justify-content-between align-items-center">
-          <button
-            className="btn btn-link text-dark text-decoration-none p-0"
-            onClick={() => setShowWithdraw(true)}
-          >
-            <FaWallet className="me-2 text-danger" />
-            Penarikan
-          </button>
+            {isAdmin && (
+              <button
+                className="btn btn-sm btn-success"
+                onClick={() => setShowSetor(true)}
+              >
+                <FaPlus size={12} />
+              </button>
+            )}
+          </li>
+        )}
 
-          {isAdmin && (
+        {isAdmin && (
+          <li className="mb-3 d-flex justify-content-between align-items-center">
             <button
-              className="btn btn-sm btn-danger"
+              className="btn btn-link text-dark text-decoration-none p-0"
               onClick={() => setShowWithdraw(true)}
             >
-              <FaMinus size={12} />
+              <FaWallet className="me-2 text-danger" />
+              Penarikan
             </button>
-          )}
-        </li>
+
+            {isAdmin && (
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => setShowWithdraw(true)}
+              >
+                <FaMinus size={12} />
+              </button>
+            )}
+          </li>
+        )}
 
         {/* Logout */}
         <li className="mt-5">
@@ -106,7 +148,6 @@ function Sidebar({ onSetorKas }) {
             Logout
           </button>
         </li>
-
       </ul>
 
       {/* MODALS */}
@@ -114,14 +155,14 @@ function Sidebar({ onSetorKas }) {
         show={showSetor}
         onHide={() => setShowSetor(false)}
         onSubmit={handleSetorKas}
-        karyawanList={dummyKaryawan}
+        karyawanList={karyawan}
       />
 
       <WithDraw
         show={showWithdraw}
         onHide={() => setShowWithdraw(false)}
         onSubmit={handleWithdraw}
-        karyawanList={dummyKaryawan}
+        karyawanList={karyawan}
       />
     </div>
   );
